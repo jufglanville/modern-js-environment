@@ -641,6 +641,10 @@ The errors above are caused by the `eslint-airbnb-config` file that we used to s
 
 This will allow `.jsx` files to be included in our `.tsx` file extensions.
 
+- 0 = turn the rule off
+- 1 = turn the rule on as a warning (doesn't affect exit code)
+- 2 = turn the rule on as an error (exit code is 1 when triggered)
+
 2. The next error *Missing an explicit type attribute for button* is easily fixed by adding a `type="button"` to our button.
 
 ```tsx
