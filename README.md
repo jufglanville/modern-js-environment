@@ -4,9 +4,9 @@
 
 ## Setting up `npm`
 
-1. To use different packages we need to setup the package manager - `npm` in our directory. Navigate to the directory or in VSCode use *ctrl + shift + \`*, and enter the following.
+1. To use different packages we need to setup the package manager - `npm` in our directory. Navigate to the directory or in VSCode use _ctrl + shift + \`_, and enter the following.
 
-```
+```bash
 npm init -y
 ```
 
@@ -14,7 +14,7 @@ This will set up an npm package using the default settings.
 
 2. Next we add a `.gitignore` file to leave the `node_modules` out of our commits.
 
-```
+```bash
 echo "node_modules" > .gitignore
 ```
 
@@ -24,45 +24,45 @@ echo "node_modules" > .gitignore
 
 1. Install `webpack` as a development dependency and the `webpack-cli` by running:
 
-```
+```bash
 npm install webpack --save-dev
 npm install -D webpack-cli
 ```
 
 2. Add an empty `webpack` config file.
 
-```
+```bash
 echo "module.exports = {}" > webpack.config.js
 ```
 
-3. Add an *entry point* to your `webpack.config.js` file. We will use `require("path")` to allow us to target the current directory with `__dirname` and then navigate to our input file:
+3. Add an _entry point_ to your `webpack.config.js` file. We will use `require("path")` to allow us to target the current directory with `__dirname` and then navigate to our input file:
 
 ```js
-const path = require("path");
+const path = require('path');
 
 module.exports = {
- entry: path.join(__dirname, "src/scripts.js"),
-}
+  entry: path.join(__dirname, 'src/scripts.js'),
+};
 ```
 
 4. Add an output configuration to the `webpack` file. Again we use `path` to target where we want to export our bundle, in this case the `build` directory found in the current directory. We then set the file name we want to use, in this case `bundle.js`:
 
 ```js
-const path = require("path");
+const path = require('path');
 
 module.exports = {
- entry: path.join(__dirname, "src/scripts.js"),
- output: {
-  path: path.resolve(__dirname, "build"),
-  filename: "bundle.js",
- },
- mode: "production"
-}
+  entry: path.join(__dirname, 'src/scripts.js'),
+  output: {
+    path: path.resolve(__dirname, 'build'),
+    filename: 'bundle.js',
+  },
+  mode: 'production',
+};
 ```
 
 5. We will also want to add the `/build` directory to our `.gitignore` file.
 
-```
+```bash
 echo "build" >> .gitignore
 ```
 
@@ -73,7 +73,7 @@ echo "build" >> .gitignore
 ```json
 ...
 "scripts": {
- "build": "webpack"
+  "build": "webpack"
 },
 ...
 ```
@@ -86,40 +86,40 @@ Using the set up above imagine we had the following directory structure:
 EnvironmentSetupProject
 |-- build
 |-- src
-| |-- scripts.js
-| |-- sum.js
+|	|-- scripts.js
+|	|-- sum.js
 |-- index.html
 |-- .gitignore
 |-- package.json
 |-- webpack.config.json
 ```
 
-##### `sum.js`  File
+##### `sum.js` File:
 
 ```js
 function sum() {
- const total = 4 + 4;
- alert(total);
+  const total = 4 + 4;
+  alert(total);
 }
 
 module.exports = sum;
 ```
 
-##### `scripts.js`  File
+##### `scripts.js` File:
 
 ```js
-const sum = require("./sum");
+const sum = require('./sum');
 
-document.getElementById("btn-one").addEventListener("click", sum);
+document.getElementById('btn-one').addEventListener('click', sum);
 ```
 
-##### `index.html`  File
+##### `index.html` File:
 
 ```html
 ...
 <body>
- <button id="btn-one">Click Me</button>
- <script src="./build/bundle.js"></script>
+  <button id="btn-one">Click Me</button>
+  <script src="./build/bundle.js"></script>
 </body>
 ```
 
@@ -127,30 +127,31 @@ When we run our `build` script using `npm run build` in our terminal we will see
 
 ## Build for any browser with `Babel`
 
-Now that we are using `webpack` to bundle our code we can extend our workflow in many different ways. The most common one is to add `Babel` as a code *transpiler* so we can build for all browsers but still use the latest JavaScript features.
+Now that we are using `webpack` to bundle our code we can extend our workflow in many different ways. The most common one is to add `Babel` as a code _transpiler_ so we can build for all browsers but still use the latest JavaScript features.
 
 1. Install `Babel` loader for `webpack` by running:
 
-```
+```bash
 npm install -D babel-loader @babel/core @babel/preset-env webpack
 ```
 
-2. Add the *module* configuration to our `webpack.config.js` file:
+2. Add the _module_ configuration to our `webpack.config.js` file:
 
 ```js
 module: {
-    rules: [
-        {
-        test: /\.m?js$/,
-        exclude: /(node_modules|bower_components)/,
-        use: {
-            loader: 'babel-loader',
-            options: { // our code will be compatible with Internet Explorer 11
-                presets: [["@babel/preset-env", { "targets": "IE 11" }]]
-            }
-        }
-        }
-    ]
+  rules: [
+    {
+      test: /\.m?js$/,
+      exclude: /(node_modules|bower_components)/,
+      use: {
+        loader: 'babel-loader',
+        options: {
+          // our code will be compatible with Internet Explorer 11
+          presets: [['@babel/preset-env', { targets: 'IE 11' }]],
+        },
+      },
+    },
+  ];
 }
 ```
 
@@ -164,19 +165,19 @@ Above we have created a `rules` array and in here we have an object. This object
 
 Using our previous example we can now update our `.js` files to use advacnced features like the `ES6` modules.
 
-##### `sum.js`  File
+##### `sum.js` File:
 
 ```js
 function sum() {
- const total = 4 + 4;
- alert(total);
+  const total = 4 + 4;
+  alert(total);
 }
 
 - module.exports = sum;
 + export default sum;
 ```
 
-##### `scripts.js`  File
+##### `scripts.js` File:
 
 ```js
 - const sum = require("./sum");
@@ -189,62 +190,64 @@ document.getElementById("btn-one").addEventListener("click", sum);
 
 Webpack offers many plugins to extend our workflow, optimise our code and improve the development experience.
 
-1. We can avoid caching issues by producing a *unique bundle name* everytime we build. To do this we need to update our `output` in our `webpack.config.js` file.
+1. We can avoid caching issues by producing a _unique bundle name_ everytime we build. To do this we need to update our `output` in our `webpack.config.js` file.
 
 ```js
 output: {
- path: path.resolve(__dirname, "build"),
- - filename: "bundle.js",
- + filename: "[contenthash].bundle.js",
+  path: path.resolve(__dirname, "build"),
+  - filename: "bundle.js",
+  + filename: "[contenthash].bundle.js",
 }
 ```
 
-The `[contenthash]` command will create a new hash each time we run our `build`  script.
+The `[contenthash]` command will create a new hash each time we run our `build` script.
 
 ![[webpackContentHash.png]]
 
 2. We can now use `HTMLWebpackPlugin` to automatically add this new hashed file to our `index.html`.
 
-```
+```bash
 npm install --save-dev html-webpack-plugin
 ```
 
 3. Back in our `webpack.config.js` we need to import this new package and add it to our module.
 
 ```js
-const path = require("path");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
- entry: path.join(__dirname, "src/scripts.js"),
- output: {
-  path: path.resolve(__dirname, "build"),
-  filename: "[contenthash].bundle.js",
- },
- plugins: [new HtmlWebpackPlugin({
-  template: path.join(__dirname, "public", "index.html"),
- })],
- mode: "production",
- module: {
-  rules: [
-   {
-    test: /\.m?js$/,
-    exclude: /(node_modules|bower_components)/,
-    use: {
-     loader: "babel-loader",
-     options: {
-      presets: [["@babel/preset-env", { targets: "IE 11" }]],
-     },
-    },
-   },
+  entry: path.join(__dirname, 'src/scripts.js'),
+  output: {
+    path: path.resolve(__dirname, 'build'),
+    filename: '[contenthash].bundle.js',
+  },
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: path.join(__dirname, 'public', 'index.html'),
+    }),
   ],
- },
+  mode: 'production',
+  module: {
+    rules: [
+      {
+        test: /\.m?js$/,
+        exclude: /(node_modules|bower_components)/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: [['@babel/preset-env', { targets: 'IE 11' }]],
+          },
+        },
+      },
+    ],
+  },
 };
 ```
 
 4. We next need to make a new `public` directory and move our `index.html` file to this.
 
-```
+```bash
 mkdir public
 mv index.html public/index.html
 ```
@@ -254,14 +257,15 @@ mv index.html public/index.html
 ```html
 ...
 <body>
- <button id="btn-one">Click Me</button>
- - <script src="./build/bundle.js"></script>
+  <button id="btn-one">Click Me</button>
+  -
+  <script src="./build/bundle.js"></script>
 </body>
 ```
 
 6. Finally, we will remove the `build` folder:
 
-```
+```bash
 rm -rf build
 ```
 
@@ -270,10 +274,10 @@ Our directory structure should now look like the below:
 ```
 EnvironmentSetupProject
 |-- public
-| |-- index.html
+|	|-- index.html
 |-- src
-| |-- scripts.js
-| |-- sum.js
+|	|-- scripts.js
+|	|-- sum.js
 |-- .gitignore
 |-- package.json
 |-- webpack.config.json
@@ -288,97 +292,94 @@ EnvironmentSetupProject
 
 1. First we need to add the `react-presets` for `babel` as a dev dependency.
 
-```
+```bash
 npm install --save-dev @babel/preset-react
 ```
 
-2. Next we need to add the *react presets* to the `babel` config in the `webpack.config.js` file. We add `jsx` to our `test` and we add `@babel/preset-react` to our `presets`.
+2. Next we need to add the _react presets_ to the `babel` config in the `webpack.config.js` file. We add `jsx` to our `test` and we add `@babel/preset-react` to our `presets`.
 
 ```js
-const path = require("path");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
- entry: path.join(__dirname, "src/scripts.js"),
- output: {
-  path: path.resolve(__dirname, "build"),
-  filename: "[contenthash].bundle.js",
- },
- plugins: [
-  new HtmlWebpackPlugin({
-   template: path.join(__dirname, "public", "index.html"),
-  }),
- ],
- mode: "production",
- module: {
-  rules: [
-   {
-    test: /\.m?js|jsx$/,
-    exclude: /(node_modules|bower_components)/,
-    use: {
-     loader: "babel-loader",
-     options: {
-      // our code will be compatible with Internet Explorer 11
-      presets: [
-       "@babel/preset-react", 
-       ["@babel/preset-env", { targets: "IE 11" }]
-      ],
-     },
-    },
-   },
+  entry: path.join(__dirname, 'src/scripts.js'),
+  output: {
+    path: path.resolve(__dirname, 'build'),
+    filename: '[contenthash].bundle.js',
+  },
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: path.join(__dirname, 'public', 'index.html'),
+    }),
   ],
- },
+  mode: 'production',
+  module: {
+    rules: [
+      {
+        test: /\.m?js|jsx$/,
+        exclude: /(node_modules|bower_components)/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            // our code will be compatible with Internet Explorer 11
+            presets: [
+              '@babel/preset-react',
+              ['@babel/preset-env', { targets: 'IE 11' }],
+            ],
+          },
+        },
+      },
+    ],
+  },
 };
 ```
 
-3. From our *Example Scenario* above we can now delete our `sum.js` and `scripts.js` files as we will use `react` instead.
+3. From our _Example Scenario_ above we can now delete our `sum.js` and `scripts.js` files as we will use `react` instead.
 
-```
+```bash
 rm src/scripts.js
 rm src/sum.js
 ```
 
 4. Now we can add `react` and `react-dom` as a dependency.
 
-```
+```bash
 npm install react-dom react
 ```
 
 5. Next we add the new `react` code.
 
-```
+```bash
 touch src/index.jsx
 ```
 
 In this file we can add the following.
 
 ```jsx
-import ReactDOM from "react-dom";
-import React from "react";
+import ReactDOM from 'react-dom';
+import React from 'react';
 
 class App extends React.Component {
-render() {
+  render() {
     return (
-        <div>
-            <h3>Hello There! What is your name?</h3>
-            <input></input>   
-            <button onClick={() => alert("Hello")}>Say Hello</button>
-        </div>
-        );
-    }
+      <div>
+        <h3>Hello There! What is your name?</h3>
+        <input></input>
+        <button onClick={() => alert('Hello')}>Say Hello</button>
+      </div>
+    );
+  }
 }
 
-ReactDOM.render(
-<App/>,
-document.getElementById('root')
-);
+ReactDOM.render(<App />, document.getElementById('root'));
 ```
 
-6. We now need to change the *entry point* in the `webpack.config.js` file.
+6. We now need to change the _entry point_ in the `webpack.config.js` file.
 
 ```json
 module.exports = {
- entry: path.join(__dirname, "src/index.jsx"),
+  entry: path.join(__dirname, "src/index.jsx"),
 ...
 }
 ```
@@ -388,32 +389,33 @@ module.exports = {
 ```html
 <!DOCTYPE html>
 <html lang="en">
-<head>
- <meta charset="UTF-8">
- <meta http-equiv="X-UA-Compatible" content="IE=edge">
- <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <title>Document</title>
-</head>
-<body>
- <div id="root"></div>>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    >
+  </body>
 </html>
 ```
 
 8. Next we will add a development server to improve of dev environment. First we will need to install `webpack-dev-server` as a development dependency.
 
-```
+```bash
 npm install -D webpack-dev-server
 ```
 
-9. In `webpack.config.js` we will add the following, this can be added after our `module`.
+9.  In `webpack.config.js` we will add the following, this can be added after our `module`.
 
 ```json
 module.exports = {
 ...
- devServer: {
-  port: 3000
- },
+  devServer: {
+	port: 3000
+  },
 };
 ```
 
@@ -421,8 +423,8 @@ module.exports = {
 
 ```json
 "scripts": {
- "build": "webpack",
- "dev": "webpack serve"
+  "build": "webpack",
+  "dev": "webpack serve"
 }
 ```
 
@@ -438,7 +440,7 @@ We will now extend our code so that it uses `typescript`.
 
 1. First we need to add this using the `ts-loader`.
 
-```
+```bash
 npm install --save-dev typescript ts-loader
 ```
 
@@ -446,33 +448,33 @@ npm install --save-dev typescript ts-loader
 
 ```js
 module: {
- rules: [
-  {
-   test: /\.m?js|jsx$/,
-   exclude: /(node_modules|bower_components)/,
-   use: {
-    loader: "babel-loader",
-    options: {
-     // our code will be compatible with Internet Explorer 11
-     presets: [
-      "@babel/preset-react",
-      ["@babel/preset-env", { targets: "IE 11" }],
-     ],
+  rules: [
+    {
+      test: /\.m?js|jsx$/,
+      exclude: /(node_modules|bower_components)/,
+      use: {
+        loader: "babel-loader",
+        options: {
+          // our code will be compatible with Internet Explorer 11
+          presets: [
+            "@babel/preset-react",
+            ["@babel/preset-env", { targets: "IE 11" }],
+          ],
+        },
+      },
     },
-   },
-  },
-  {
-   test: /\.tsx?$/,
-   exclude: /node_modules/,
-   use: 'ts-loader',
-  },
- ],
+    {
+      test: /\.tsx?$/,
+      exclude: /node_modules/,
+      use: 'ts-loader',
+    },
+  ],
 },
 ```
 
 3. We now need to add a `tsconfig.json` file to our main directory.
 
-```
+```bash
 touch tsconfig.json
 ```
 
@@ -480,29 +482,29 @@ touch tsconfig.json
 
 ```json
 {
- "compilerOptions": {
-     "module": "commonjs",
-     "noImplicitAny": true,
-     "removeComments": true,
-     "preserveConstEnums": true,
-     "sourceMap": true,
-     "esModuleInterop": true,
-     "jsx": "react"
- },
- "include": ["src"],
- "exclude": ["node_modules"]
+  "compilerOptions": {
+    "module": "commonjs",
+    "noImplicitAny": true,
+    "removeComments": true,
+    "preserveConstEnums": true,
+    "sourceMap": true,
+    "esModuleInterop": true,
+    "jsx": "react"
+  },
+  "include": ["src"],
+  "exclude": ["node_modules"]
 }
 ```
 
-5. Finally, we need to change all our `jsx` files to `tsx` files to allow us to use static typing. In our *example scenario* this is our `src/index.jsx`.
+5. Finally, we need to change all our `jsx` files to `tsx` files to allow us to use static typing. In our _example scenario_ this is our `src/index.jsx`.
 
 ## Adding a Linter
 
-Next we will add a *linter* to our project to ensure that we are following correct coding standards. For this we are going to use `eslint`.
+Next we will add a _linter_ to our project to ensure that we are following correct coding standards. For this we are going to use `eslint`.
 
 1. We will first download `eslint` as a developer dependency package.
 
-```
+```bash
 npm install eslint --save-dev
 ```
 
@@ -516,38 +518,63 @@ After this `eslint` will check the dependencies needed to be installed for this 
 
 ```json
 {
- "env": {
-  "browser": true,
-  "es2021": true
- },
- "extends": [
-  "plugin:react/recommended",
-  "airbnb"
- ],
- "parser": "@typescript-eslint/parser",
- "parserOptions": {
-  "ecmaFeatures": {
-   "jsx": true
+  "env": {
+    "browser": true,
+    "es2021": true
   },
-  "ecmaVersion": "latest",
-  "sourceType": "module"
- },
- "plugins": [
-  "react",
-  "@typescript-eslint"
- ],
- "rules": {
- }
+  "extends": ["plugin:react/recommended", "airbnb"],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "ecmaVersion": "latest",
+    "sourceType": "module"
+  },
+  "plugins": ["react", "@typescript-eslint"],
+  "rules": {}
 }
+```
+
+4. Now we have set up our _linter_ for `.js` we should also update it to work for `typescript`. This requires us to use the `eslint-config-airbnb-typescript` library.
+
+```bash
+npm install eslint-config-airbnb-typescript \
+            @typescript-eslint/eslint-plugin@^5.13.0 \
+            @typescript-eslint/parser@^5.0.0 \
+            --save-dev
+```
+
+5. Back in our `.eslintrc.json` file we will need to make some updates. In the `extends` property we need to add `airbnb-typescript`.
+
+```json
+  "extends": [
+    "plugin:react/recommended",
+    "airbnb",
+    "airbnb-typescript"
+  ],
+```
+
+6. We then need to target our `tsconfig.json` file in our `parserOptions`.
+
+```json
+    "parserOptions": {
+      "project": "./tsconfig.json",
+      "ecmaFeatures": {
+        "jsx": true
+      },
+      "ecmaVersion": "latest",
+      "sourceType": "module"
+    },
 ```
 
 ## Adding Prettier to our Linter
 
-We will now integrate *Prettier* into our *eslint*.
+We will now integrate _Prettier_ into our _eslint_.
 
 1. First we need to install `prettier`, `eslint-plugin-prettier` and `eslint-config-prettier`.
 
-```
+```bash
 npm install --save-dev prettier eslint-plugin-prettier eslint-config-prettier
 ```
 
@@ -555,10 +582,10 @@ npm install --save-dev prettier eslint-plugin-prettier eslint-config-prettier
 
 ```json
 {
- "trailingComma": "es5",
- "tabWidth": 2,
- "semi": true,
- "singleQuote": true
+  "trailingComma": "es5",
+  "tabWidth": 2,
+  "semi": true,
+  "singleQuote": true
 }
 ```
 
@@ -566,8 +593,8 @@ npm install --save-dev prettier eslint-plugin-prettier eslint-config-prettier
 
 ```json
   "extends": [
- "plugin:react/recommended",
- "airbnb",
+    "plugin:react/recommended",
+    "airbnb",
     "plugin:prettier/recommended",
     "prettier"
   ],
@@ -577,11 +604,11 @@ The `plugin:prettier/recommended` extends the `eslint-config-prettier` which tur
 
 When developing in `react`, we use `eslint-plugin-react` for `react` specific `eslint` rules. There are some rules within it that also conflict with `prettier`, so `eslint-config-prettier` provides an additional `react` specific config to extend from that removes those conflicting rules.
 
-4. Now we can add a new `script` to our `package.json` file to run our *linter*.
+4. Now we can add a new `script` to our `package.json` file to run our _linter_.
 
 ```json
 "scripts": {
- "lint": "eslint ./src/*"
+  "lint": "eslint ./src/*"
 }
 ```
 
@@ -595,7 +622,7 @@ Linting makes more sense when run before commiting your code. By doing so you ca
 
 1. First we will install the `lint-staged`.
 
-```
+```bash
 npx mrm@2 lint-staged
 ```
 
@@ -616,7 +643,7 @@ This will mean that `husky` will run our `lint-staged` before every commit we ma
 
 ```json
 "lint-staged": {
- "*.{ts,tsx}": "eslint --cache --fix"
+  "*.{ts,tsx}": "eslint --cache --fix"
 }
 ```
 
@@ -631,29 +658,29 @@ As you can see we have some errors that need to be addressed before we can `comm
 
 The errors above are caused by the `eslint-airbnb-config` file that we used to set up our `eslint`. We can bypass these though by editting our `.eslintrc.json` file or the file in which these errors occured.
 
-1. The first error we will tackle is the *JSX not allowed in files with extension '.tsx'*. In our `.eslintrc.json` file we will add the following `rule`:
+1. The first error we will tackle is the _JSX not allowed in files with extension '.tsx'_. In our `.eslintrc.json` file we will add the following `rule`:
 
 ```json
 "rules": {
- "react/jsx-filename-extension": [1, { "extensions": [".tsx", ".ts"] }]
+  "react/jsx-filename-extension": [1, { "extensions": [".tsx", ".ts"] }]
 }
 ```
 
-This will allow `.jsx` files to be included in our `.tsx` file extensions.
+This will allow `.jsx` files to be included in our `.tsx` file extensions as a `warning`.
 
 - 0 = turn the rule off
 - 1 = turn the rule on as a warning (doesn't affect exit code)
 - 2 = turn the rule on as an error (exit code is 1 when triggered)
 
-2. The next error *Missing an explicit type attribute for button* is easily fixed by adding a `type="button"` to our button.
+2. The next error _Missing an explicit type attribute for button_ is easily fixed by adding a `type="button"` to our button.
 
 ```tsx
 <button type="button" onClick={() => alert('Hello')}>
- Say Hello
+  Say Hello
 </button>
 ```
 
-3. The final error *Component should be written as a pure function* we are going to bypass within the file itself. To do this we will add the following to the top of our `index.tsx` file.
+3. The final error _Component should be written as a pure function_ we are going to bypass within the file itself. To do this we will add the following to the top of our `index.tsx` file.
 
 ```tsx
 /* eslint-disable react/prefer-stateless-function */
